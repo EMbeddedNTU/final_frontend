@@ -1,36 +1,36 @@
-import 'package:final_frontend/screens/home/cart/cart_page.dart';
-import 'package:final_frontend/screens/home/menu/menu_page.dart';
+import 'package:final_frontend/screens/home/gesture_setting/gesture_setting_page.dart';
+import 'package:final_frontend/screens/home/agent_setting/agent_setting_page.dart';
 import 'package:flutter/material.dart';
 
 enum HomeTabs {
-  menuList,
-  order,
+  agentSetting,
+  gestureSetting,
 }
 
 extension MainTabsExt on HomeTabs {
   String getLabel() {
     switch (this) {
-      case HomeTabs.menuList:
-        return "菜單";
-      case HomeTabs.order:
-        return "已點項目";
+      case HomeTabs.agentSetting:
+        return "設定Agent";
+      case HomeTabs.gestureSetting:
+        return "設定手勢";
     }
   }
 
   Widget getPage() {
     switch (this) {
-      case HomeTabs.menuList:
-        return MenuPage();
-      case HomeTabs.order:
-        return CartPage();
+      case HomeTabs.agentSetting:
+        return AgentSettingPage();
+      case HomeTabs.gestureSetting:
+        return GestureSettingPage();
     }
   }
 
   MaterialColor getColor() {
     switch (this) {
-      case HomeTabs.menuList:
+      case HomeTabs.agentSetting:
         return Colors.amber;
-      case HomeTabs.order:
+      case HomeTabs.gestureSetting:
         return Colors.cyan;
     }
   }

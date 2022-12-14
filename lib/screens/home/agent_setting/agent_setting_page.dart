@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 
-class MenuPage extends StatelessWidget {
-  MenuPage({Key? key}) : super(key: key);
+class AgentSettingPage extends StatelessWidget {
+  AgentSettingPage({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override

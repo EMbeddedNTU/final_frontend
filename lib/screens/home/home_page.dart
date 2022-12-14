@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _selectedTab = ValueNotifier(HomeTabs.menuList);
+  final _selectedTab = ValueNotifier(HomeTabs.agentSetting);
 
   List<IconData> tapIcons = [
     Icons.home_rounded,

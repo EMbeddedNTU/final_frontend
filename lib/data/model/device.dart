@@ -1,5 +1,3 @@
-import 'package:final_frontend/data/model/product_size.dart';
-
 enum DeviceLocation { other, porch, door, livingRoom, diningRoom, bedroom }
 
 class Device {
