@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 class AgentSettingPage extends StatelessWidget {
   AgentSettingPage({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,7 +104,8 @@ class AgentSettingPage extends StatelessWidget {
         name: "name",
         about: "about",
         on: true,
-        image: "",
+        image:
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
         location: DeviceLocation.bedroom),
   ];
 

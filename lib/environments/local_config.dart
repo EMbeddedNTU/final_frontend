@@ -2,5 +2,5 @@ import 'package:final_frontend/environments/base_config.dart';
 
 class LocalConfig extends BaseConfig {
   @override
-  String get baseUrl => 'http://localhost:5000';
+  String get baseUrl => 'http://localhost:3000/';
 }
