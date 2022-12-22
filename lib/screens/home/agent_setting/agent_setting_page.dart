@@ -100,6 +100,7 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
     return Container(
       margin: const EdgeInsets.only(left: 15, right: 15),
       child: CustomTextBox(
+        onSubmitted: context.read<AgentSettingModel>().searchAgent,
         hint: "Search",
         prefix: const Icon(Icons.search, color: Colors.black),
         suffix: const Icon(Icons.filter_list_outlined, color: Colors.black),
@@ -109,7 +110,7 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
 
   Widget buildAgentProfileList(BuildContext context) {
     final List<AgentInfo> agentProfiles =
-        context.watch<AgentSettingModel>().agentProfiles;
+        context.watch<AgentSettingModel>().filterAgentProfiles;
     return Column(
       children: List.generate(
         agentProfiles.length,

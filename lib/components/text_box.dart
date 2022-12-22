@@ -1,19 +1,45 @@
 import 'package:flutter/material.dart';
 
-class CustomTextBox extends StatelessWidget {
+class CustomTextBox extends StatefulWidget {
   CustomTextBox(
-      {Key? key, this.hint = "", this.prefix, this.suffix, this.controller})
+      {Key? key,
+      required this.onSubmitted,
+      this.hint = "",
+      this.prefix,
+      this.suffix})
       : super(key: key);
+
   final String hint;
   final Widget? prefix;
   final Widget? suffix;
-  final TextEditingController? controller;
+  final ValueChanged<String> onSubmitted;
+
+  @override
+  CustomTextBoxState createState() => CustomTextBoxState();
+}
+
+class CustomTextBoxState extends State<CustomTextBox> {
+  late final TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(bottom: 3),
+      padding: const EdgeInsets.only(bottom: 3),
       height: 44,
       decoration: BoxDecoration(
           color: Colors.white,
@@ -21,12 +47,13 @@ class CustomTextBox extends StatelessWidget {
           borderRadius: BorderRadius.circular(10)),
       child: TextField(
         controller: controller,
+        onSubmitted: widget.onSubmitted,
         decoration: InputDecoration(
-            prefixIcon: prefix,
-            suffixIcon: suffix,
+            prefixIcon: widget.prefix,
+            suffixIcon: widget.suffix,
             border: InputBorder.none,
-            hintText: hint,
-            hintStyle: TextStyle(color: Colors.black, fontSize: 15)),
+            hintText: widget.hint,
+            hintStyle: const TextStyle(color: Colors.black, fontSize: 15)),
       ),
     );
   }

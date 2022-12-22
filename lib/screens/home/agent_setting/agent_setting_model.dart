@@ -37,6 +37,7 @@ class AgentSettingModel extends BaseModel {
       _agentService.getAgentProfiles(),
       (response) {
         agentProfiles = response;
+        filterAgentProfiles = List.from(agentProfiles);
         notifyListeners();
       },
     );
@@ -62,6 +63,16 @@ class AgentSettingModel extends BaseModel {
 
   void setAgentLocation(String value) {
     locationInput = value;
+    notifyListeners();
+  }
+
+  void searchAgent(String value) {
+    if (value != "") {
+      filterAgentProfiles =
+          agentProfiles.where((i) => i.name.contains(value)).toList();
+    } else {
+      filterAgentProfiles = List.from(agentProfiles);
+    }
     notifyListeners();
   }
 }
