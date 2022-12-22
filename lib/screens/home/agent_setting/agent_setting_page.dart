@@ -1,16 +1,26 @@
-import 'package:final_frontend/components/device_view.dart';
+import 'package:final_frontend/data/client/agent_service.dart';
+import 'package:final_frontend/data/model/agent_info.dart';
+import 'package:final_frontend/screens/home/agent_setting/components/agent_item_view.dart';
 import 'package:final_frontend/components/text_box.dart';
-import 'package:final_frontend/data/model/device.dart';
+import 'package:final_frontend/screens/home/agent_setting/agent/agent_detail.dart';
+import 'package:final_frontend/screens/home/agent_setting/agent_setting_model.dart';
 import 'package:final_frontend/screens/home/components/notification.dart';
+import 'package:final_frontend/screens/util/base_state_less_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 
-import 'package:http/http.dart' as http;
-
-class AgentSettingPage extends StatelessWidget {
-  AgentSettingPage({Key? key}) : super(key: key);
+class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
+  const AgentSettingPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  AgentSettingModel createProvider(BuildContext context) {
+    final AgentService agentService = GetIt.instance<AgentService>();
+    return AgentSettingModel(agentService);
+  }
+
+  @override
+  Widget onBuild(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -49,7 +59,7 @@ class AgentSettingPage extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(left: 15, right: 15),
             child: const Text(
-              "Find Device",
+              "Find Agent",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -66,23 +76,11 @@ class AgentSettingPage extends StatelessWidget {
           const SizedBox(
             height: 25,
           ),
-          // Container(
-          //   margin: EdgeInsets.only(left: 15, right: 15),
-          //   height: 150,
-          //   decoration: BoxDecoration(
-          //       color: Colors.grey,
-          //       borderRadius: BorderRadius.circular(15),
-          //       image: DecorationImage(
-          //           fit: BoxFit.cover,
-          //           image: NetworkImage(
-          //             "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTF8fHByb2ZpbGV8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
-          //           ))),
-          // ),
           const SizedBox(height: 20),
           Container(
             margin: const EdgeInsets.only(left: 15, right: 15),
             child: const Text(
-              "Your Devices",
+              "Your Agents",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -91,7 +89,7 @@ class AgentSettingPage extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.only(left: 15, right: 15),
-            child: listFeatured(context),
+            child: buildAgentProfileList(context),
           ),
           const SizedBox(height: 20),
         ],
@@ -99,39 +97,27 @@ class AgentSettingPage extends StatelessWidget {
     );
   }
 
-  final List<Device> devices = [
-    Device(
-        name: "name",
-        about: "about",
-        on: true,
-        image:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
-        location: DeviceLocation.bedroom),
-  ];
-
-  listFeatured(BuildContext context) {
+  Widget buildAgentProfileList(BuildContext context) {
+    final List<AgentInfo> agentProfiles =
+        context.watch<AgentSettingModel>().agentProfiles;
     return Column(
       children: List.generate(
-          devices.length,
-          (index) => DeviceView(
-                data: devices[index],
-                onTap: () async {
-                  print("send http");
-                  final url = Uri.parse('http://linux9.csie.ntu.edu.tw:13751');
-                  try {
-                    final response = await http.get(url);
-                    print(response);
-                    print(response.body);
-                  } catch (e) {
-                    print(e.runtimeType);
-                  }
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => ItemPage(productList[0]),
-                  //   ),
-                  // );
-                },
-              )),
+        agentProfiles.length,
+        (index) => AgentItemView(
+          agentInfo: agentProfiles[index],
+          onTap: () async {
+            final notifier =
+                Provider.of<AgentSettingModel>(context, listen: false);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    ChangeNotifierProvider<AgentSettingModel>.value(
+                        value: notifier, child: AgentPage(index)),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

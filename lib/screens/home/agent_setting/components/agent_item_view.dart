@@ -1,11 +1,12 @@
 import 'package:final_frontend/components/round_image.dart';
-import 'package:final_frontend/data/model/device.dart';
+import 'package:final_frontend/data/model/agent_info.dart';
 import 'package:flutter/material.dart';
 
-class DeviceView extends StatelessWidget {
-  const DeviceView({Key? key, required this.data, this.onTap})
+class AgentItemView extends StatelessWidget {
+  const AgentItemView({Key? key, required this.agentInfo, this.onTap})
       : super(key: key);
-  final Device data;
+
+  final AgentInfo agentInfo;
   final GestureTapCallback? onTap;
 
   @override
@@ -31,22 +32,22 @@ class DeviceView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CustomImage(
-              data.image,
+              "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
               width: 60,
               height: 60,
               radius: 10,
             ),
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(data.name,
+                  Text(agentInfo.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  SizedBox(
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w600)),
+                  const SizedBox(
                     height: 3,
                   ),
                   Row(
@@ -62,8 +63,8 @@ class DeviceView extends StatelessWidget {
               ),
             ),
             Column(
-              children: const <Widget>[
-                Text("location",
+              children: <Widget>[
+                Text(agentInfo.location,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
