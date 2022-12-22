@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:final_frontend/data/client/gesture_service.dart';
+import 'package:final_frontend/data/model/agent_info.dart';
 import 'package:final_frontend/data/model/effect_type.dart';
 import 'package:final_frontend/data/model/gesture_setting_option.dart';
 import 'package:final_frontend/data/model/gesture_state_command_option.dart';
@@ -18,13 +19,13 @@ class GestureSettingModel extends BaseModel {
   List<GestureSetting> gestureSettings = [];
 
   GestureSettingOption gestureSettingOption = GestureSettingOption(
-      gestureTypeList: [], effectTypeList: [], agentNameList: []);
+      gestureTypeList: [], effectTypeList: [], agentInfoList: []);
 
   List<StateCommandOption> stateCommandOptions = [];
 
   GestureType selectGesture = GestureType.left;
   EffectType selectScope = EffectType.local;
-  String selectAgent = '裝置一';
+  AgentInfo? selectAgent;
   int selectStateCommandId = 0;
 
   void getGestureSettings() {
@@ -60,21 +61,31 @@ class GestureSettingModel extends BaseModel {
   }
 
   void refreshPopupOption() {
+    selectAgent = null;
     getGestureOptions();
     getStateCommandOptions();
     log("refresh");
   }
 
   void addGesture() {
-    subscribe<bool>(
-      _gestureService.addGesture(
-          selectGesture, selectScope, selectStateCommandId, 1, null),
-      (response) {
-        print("add gesture");
-        print(response);
-        getGestureSettings();
-      },
-    );
+    if (selectAgent != null || selectScope == EffectType.local) {
+      subscribe<bool>(
+        _gestureService.addGesture(
+            selectGesture,
+            selectScope,
+            selectStateCommandId,
+            selectAgent?.id,
+            selectAgent?.id,
+            null), //TODO:
+        (response) {
+          print("add gesture");
+          print(response);
+          getGestureSettings();
+        },
+      );
+    } else {
+      log("no selected agent");
+    }
   }
 
   void deleteGesture(
@@ -88,22 +99,24 @@ class GestureSettingModel extends BaseModel {
     );
   }
 
-  void setGesture(value) {
+  void setGesture(GestureType value) {
     selectGesture = value;
     notifyListeners();
   }
 
-  void setScope(value) {
+  void setScope(EffectType value) {
     selectScope = value;
     notifyListeners();
   }
 
-  void setAgent(value) {
-    selectAgent = value;
-    notifyListeners();
+  void setAgent(AgentInfo? value) {
+    if (value != null) {
+      selectAgent = value;
+      notifyListeners();
+    }
   }
 
-  void setCommand(value) {
+  void setCommand(int value) {
     selectStateCommandId = value;
     notifyListeners();
   }

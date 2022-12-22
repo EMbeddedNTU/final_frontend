@@ -1,4 +1,5 @@
 enum EffectType {
   local,
-  specific,
+  // specific,
+  global,
 }

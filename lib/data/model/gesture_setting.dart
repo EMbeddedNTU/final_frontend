@@ -8,6 +8,7 @@ class GestureSetting {
       {required this.gestureType,
       required this.effectType,
       required this.agentTriggerName,
+      required this.agentTargetName,
       required this.stateCommandName});
 
   GestureType gestureType;
@@ -16,12 +17,15 @@ class GestureSetting {
 
   String? agentTriggerName;
 
+  String? agentTargetName;
+
   String stateCommandName;
 
   Map<String, dynamic> toMap() => {
         "gestureType": gestureType,
         "effectType": effectType,
         "agentTriggerName": agentTriggerName,
+        "agentTargetName": agentTargetName,
         "stateCommandName": stateCommandName,
       };
 
@@ -32,6 +36,7 @@ class GestureSetting {
       effectType:
           EffectType.values[int.tryParse(map['effectType']) ?? 0], // TODO:
       agentTriggerName: map['agentTriggerName'],
+      agentTargetName: map['agentTargetName'],
       stateCommandName: map['stateCommandName'],
     );
   }

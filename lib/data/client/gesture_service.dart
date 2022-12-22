@@ -79,7 +79,8 @@ class GestureService {
     GestureType gestureType,
     EffectType effectType,
     int stateCommandId,
-    int stateCommandAgentId,
+    int? stateCommandAgentId,
+    int? targetAgentId,
     int? triggerAgentId,
   ) async {
     const urlPart = "phone/addGesture";
@@ -87,11 +88,16 @@ class GestureService {
       "gestureType": gestureType.index.toString(),
       "effectType": effectType.index.toString(),
       "stateCommandId": stateCommandId.toString(),
-      "stateCommandAgentId": stateCommandAgentId.toString()
     };
 
+    if (stateCommandAgentId != null) {
+      body["stateCommandAgentId"] = stateCommandAgentId.toString();
+    }
     if (triggerAgentId != null) {
       body["triggerAgentId"] = triggerAgentId.toString();
+    }
+    if (targetAgentId != null) {
+      body["targetAgentId"] = targetAgentId.toString();
     }
 
     final url = Uri.parse('$_baseUrl$urlPart');

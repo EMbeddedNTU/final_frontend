@@ -1,28 +1,31 @@
 import 'dart:convert';
 
+import 'package:final_frontend/data/model/agent_info.dart';
+
 class GestureSettingOption {
   GestureSettingOption(
       {required this.gestureTypeList,
       required this.effectTypeList,
-      required this.agentNameList});
+      required this.agentInfoList});
 
   List<String> gestureTypeList;
 
   List<String> effectTypeList;
 
-  List<String> agentNameList;
+  List<AgentInfo> agentInfoList;
 
   Map<String, dynamic> toMap() => {
         "gestureTypeList": gestureTypeList,
         "effectTypeList": effectTypeList,
-        "agentNameList": agentNameList,
+        "agentInfoList": agentInfoList,
       };
 
   factory GestureSettingOption.fromMap(Map<String, dynamic> map) {
     return GestureSettingOption(
       gestureTypeList: List.from(map['gestureTypeList']),
       effectTypeList: List.from(map['effectTypeList']),
-      agentNameList: List.from(map['agentNameList']),
+      agentInfoList:
+          List.from(map['agentInfoList'].map((e) => AgentInfo.fromMap(e))),
     );
   }
 

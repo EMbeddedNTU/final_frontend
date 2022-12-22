@@ -1,4 +1,5 @@
 import 'package:final_frontend/data/client/gesture_service.dart';
+import 'package:final_frontend/data/model/agent_info.dart';
 import 'package:final_frontend/data/model/effect_type.dart';
 import 'package:final_frontend/data/model/gesture_setting.dart';
 import 'package:final_frontend/data/model/gesture_type.dart';
@@ -17,7 +18,6 @@ class GestureSettingPage extends StatefulWidget {
 class GestureSettingPageState extends State<GestureSettingPage> {
   List<String> gesture = ['左', '右', '上', '下', '前', '後'];
   List<String> scope = ['全域', '區域'];
-  List<String> agent = ['裝置一', '裝置二'];
 
   GestureSettingModel createProvider(BuildContext context) {
     final GestureService gestureService = GetIt.instance<GestureService>();
@@ -33,21 +33,23 @@ class GestureSettingPageState extends State<GestureSettingPage> {
             context.select<GestureSettingModel, List<GestureSetting>>(
                 (GestureSettingModel model) => model.gestureSettings);
 
-        return ListView.builder(
-          itemCount: gestureSettings.length + 1,
-          itemBuilder: (context, index) {
-            return (index == gestureSettings.length)
-                ? buildAddButton(context)
-                : buildGestureCard(context, gestureSettings[index], index);
-          },
-        );
+        return Column(children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: gestureSettings.length,
+              itemBuilder: (context, index) {
+                return buildGestureCard(context, gestureSettings[index], index);
+              },
+            ),
+          ),
+          buildAddButton(context)
+        ]);
       },
     );
   }
 
   Widget buildAddGesturePopup(BuildContext context) {
     final selectScope = context.watch<GestureSettingModel>().selectScope;
-    final selectAgent = context.watch<GestureSettingModel>().selectAgent;
     final selectStateCommandId =
         context.watch<GestureSettingModel>().selectStateCommandId;
 
@@ -60,8 +62,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
       buildGestureSelection(context, GestureType.values),
       buildSingleProperty(context, context.read<GestureSettingModel>().setScope,
           "類型", EffectType.values, selectScope),
-      buildSingleProperty(context, context.read<GestureSettingModel>().setAgent,
-          "裝置", agent, selectAgent),
+      buildAgentSelection(context),
       buildSingleProperty(
           context,
           context.read<GestureSettingModel>().setCommand,
@@ -85,6 +86,32 @@ class GestureSettingPageState extends State<GestureSettingPage> {
         )
       ]),
     ]);
+  }
+
+  Widget buildAgentSelection(BuildContext context) {
+    final agents =
+        context.watch<GestureSettingModel>().gestureSettingOption.agentInfoList;
+    final selectAgent = context.watch<GestureSettingModel>().selectAgent;
+    print(agents);
+    print(selectAgent);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        const Text("裝置"),
+        DropdownButton(
+          value: selectAgent,
+          items: agents
+              .map((item) => DropdownMenuItem(
+                    key: UniqueKey(),
+                    value: item,
+                    child: SizedBox(
+                        width: 100, child: Center(child: Text(item.name))),
+                  ))
+              .toList(),
+          onChanged: context.read<GestureSettingModel>().setAgent,
+        )
+      ],
+    );
   }
 
   Widget buildGestureSelection(BuildContext context, List<GestureType> list) {
@@ -156,8 +183,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
               onPressed: () {
                 final notifier =
                     Provider.of<GestureSettingModel>(context, listen: false);
-                context.read<GestureSettingModel>().getGestureOptions();
-                context.read<GestureSettingModel>().getStateCommandOptions();
+                context.read<GestureSettingModel>().refreshPopupOption();
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -185,7 +211,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
       onDismissed: (DismissDirection direction) {
         context
             .read<GestureSettingModel>()
-            .deleteGesture(setting.gestureType, setting.effectType, 0); //TODO:
+            .deleteGesture(setting.gestureType, setting.effectType, null);
       },
       child: Container(
         margin: const EdgeInsets.all(5),
@@ -207,7 +233,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
           children: [
             Text("手勢： ${setting.gestureType}"),
             Text("類型： ${setting.effectType}"),
-            Text("裝置： ${setting.agentTriggerName}"),
+            Text("裝置： ${setting.agentTargetName}"),
             Text("效果： ${setting.stateCommandName}")
           ],
         ),
