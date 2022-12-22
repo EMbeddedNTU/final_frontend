@@ -17,7 +17,7 @@ class AgentInfo {
 
   factory AgentInfo.fromMap(Map<String, dynamic> map) {
     return AgentInfo(
-        id: map['id'], name: map['name'], location: map['location']);
+        id: map['id'], name: map['name'], location: map['location'].toString());
   }
 
   String toJson() => json.encode(toMap());

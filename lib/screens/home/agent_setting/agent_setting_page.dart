@@ -67,12 +67,14 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
             height: 20,
           ),
           Container(
-              margin: const EdgeInsets.only(left: 15, right: 15),
-              child: CustomTextBox(
-                  hint: "Search",
-                  prefix: const Icon(Icons.search, color: Colors.black),
-                  suffix: const Icon(Icons.filter_list_outlined,
-                      color: Colors.black))),
+            margin: const EdgeInsets.only(left: 15, right: 15),
+            child: CustomTextBox(
+              hint: "Search",
+              prefix: const Icon(Icons.search, color: Colors.black),
+              suffix:
+                  const Icon(Icons.filter_list_outlined, color: Colors.black),
+            ),
+          ),
           const SizedBox(
             height: 25,
           ),
