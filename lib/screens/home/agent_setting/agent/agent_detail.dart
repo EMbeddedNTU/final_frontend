@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AgentPage extends StatelessWidget {
-  AgentPage(this.index, {Key? key}) : super(key: key);
+  const AgentPage(this.index, {Key? key}) : super(key: key);
 
   final int index;
 
@@ -18,31 +18,42 @@ class AgentPage extends StatelessWidget {
 
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return SafeArea(
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: buildAppBar(context),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildProductPageView(width, height),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildName(context, agentInfo.name),
-                    const SizedBox(height: 10),
-                    buildLocationText(context, agentInfo.location),
-                    const SizedBox(height: 30),
-                    buildEditButton(context),
-                  ],
-                ),
-              )
-            ],
-          ),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFD5E4E5),
+      appBar: buildAppBar(context),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildAgentImageView(width, height),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF5F5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildName(context, agentInfo.name),
+                        const SizedBox(height: 10),
+                        buildLocationText(context, agentInfo.location),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  buildEditButton(context),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -50,7 +61,7 @@ class AgentPage extends StatelessWidget {
 
   PreferredSizeWidget buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFFEB6440),
       elevation: 0,
       leading: IconButton(
         onPressed: () {
@@ -64,9 +75,9 @@ class AgentPage extends StatelessWidget {
     );
   }
 
-  Widget buildProductPageView(double width, double height) {
+  Widget buildAgentImageView(double width, double height) {
     return Container(
-      height: height * 0.42,
+      height: height * 0.25,
       width: width,
       child: Column(
         children: [
@@ -88,67 +99,58 @@ class AgentPage extends StatelessWidget {
 
   Text buildName(BuildContext context, String name) {
     return Text(
-      name,
-      style: Theme.of(context).textTheme.headline2,
+      '裝置名稱： $name',
+      style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
     );
   }
 
   Widget buildLocationText(BuildContext context, String location) {
     return Column(children: [
       Text(
-        location,
-        style: Theme.of(context).textTheme.headline4,
+        '裝置位置：$location',
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
       const SizedBox(height: 10),
       // Text(product.about)
     ]);
   }
 
-  Widget buildSaveButton(BuildContext context, int agentId) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      ElevatedButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Text("取消"),
-      ),
-      const SizedBox(width: 30),
-      ElevatedButton(
-        onPressed: () {
-          context.read<AgentSettingModel>().editAgentProfile(agentId);
-          Navigator.of(context).pop();
-        },
-        child: const Text("確認"),
-      )
-    ]);
-  }
-
   Widget buildEditButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        final notifier = Provider.of<AgentSettingModel>(context, listen: false);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return ChangeNotifierProvider<AgentSettingModel>.value(
-              value: notifier,
-              builder: (BuildContext context, _) {
-                return AlertDialog(
-                  title: const Center(child: Text("更改")),
-                  content: buildEditProfilePopup(context),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            final notifier =
+                Provider.of<AgentSettingModel>(context, listen: false);
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return ChangeNotifierProvider<AgentSettingModel>.value(
+                  value: notifier,
+                  builder: (BuildContext context, _) {
+                    return AlertDialog(
+                      title: const Center(
+                          child: Text("更改",
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold))),
+                      content: buildEditProfilePopup(context),
+                    );
+                  },
                 );
               },
             );
           },
-        );
-      },
-      style: ElevatedButton.styleFrom(
-        shape: CircleBorder(),
-        padding: EdgeInsets.all(20),
-        backgroundColor: Colors.blue, // <-- Button color
-        foregroundColor: Colors.red, // <-- Splash color
-      ),
-      child: const Icon(Icons.edit, color: Colors.white),
+          style: ElevatedButton.styleFrom(
+            shape: const CircleBorder(),
+            padding: const EdgeInsets.all(20),
+            backgroundColor: const Color(0xFF4A7174), // <-- Button color
+            foregroundColor: const Color(0xFFEB6440), // <-- Splash color
+          ),
+          child: const Icon(Icons.edit, color: Colors.white),
+        ),
+        const SizedBox(width: 20),
+      ],
     );
   }
 
@@ -156,18 +158,53 @@ class AgentPage extends StatelessWidget {
     final List<AgentInfo> agentProfiles =
         context.watch<AgentSettingModel>().agentProfiles;
     final agentInfo = agentProfiles[index];
+    double wid = MediaQuery.of(context).size.width;
 
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      const SizedBox(height: 10),
-      TextFieldWidget(
-          label: "名稱",
-          text: agentInfo.name,
-          onChanged: context.read<AgentSettingModel>().setAgentName),
-      TextFieldWidget(
-          label: "位置",
-          text: agentInfo.location,
-          onChanged: context.read<AgentSettingModel>().setAgentLocation),
-      buildSaveButton(context, agentInfo.id)
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        SizedBox(height: 10, width: wid - 30.0),
+        TextFieldWidget(
+            label: "名稱",
+            text: agentInfo.name,
+            onChanged: context.read<AgentSettingModel>().setAgentName),
+        const SizedBox(height: 20),
+        TextFieldWidget(
+            label: "位置",
+            text: agentInfo.location,
+            onChanged: context.read<AgentSettingModel>().setAgentLocation),
+        const SizedBox(height: 30),
+        buildSaveButton(context, agentInfo.id)
+      ]),
+    );
+  }
+
+  Widget buildSaveButton(BuildContext context, int agentId) {
+    final buttonStyle = ElevatedButton.styleFrom(
+      foregroundColor: Colors.white,
+      backgroundColor: const Color(0xFF4A7174),
+      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      minimumSize: const Size(100, 40),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+    );
+    return Wrap(alignment: WrapAlignment.center, spacing: 30, children: [
+      ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        style: buttonStyle,
+        child: const Text("取消"),
+      ),
+      ElevatedButton(
+        onPressed: () {
+          context.read<AgentSettingModel>().editAgentProfile(agentId);
+          Navigator.of(context).pop();
+        },
+        style: buttonStyle,
+        child: const Text("確認"),
+      )
     ]);
   }
 }

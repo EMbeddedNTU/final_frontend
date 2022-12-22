@@ -1,4 +1,5 @@
 import 'package:final_frontend/data/client/agent_service.dart';
+import 'package:final_frontend/data/client/notification_service.dart';
 import 'package:final_frontend/data/model/agent_info.dart';
 import 'package:final_frontend/screens/home/agent_setting/components/agent_item_view.dart';
 import 'package:final_frontend/components/text_box.dart';
@@ -17,7 +18,9 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
   @override
   AgentSettingModel createProvider(BuildContext context) {
     final AgentService agentService = GetIt.instance<AgentService>();
-    return AgentSettingModel(agentService);
+    final NotificationService notificationService =
+        GetIt.instance<NotificationService>();
+    return AgentSettingModel(agentService, notificationService);
   }
 
   @override
@@ -39,17 +42,23 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
                       Icons.clear_all_rounded,
                       size: 28,
                     ))),
-            NotificationBox(
-              number: 1,
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const NotificationPage()));
-              },
-            )
+            buildNotificationButton(context)
           ],
         ),
       ),
       body: buildMain(context),
+    );
+  }
+
+  Widget buildNotificationButton(BuildContext context) {
+    final int notificationNum =
+        context.watch<AgentSettingModel>().notifications.length;
+    return NotificationBox(
+      number: notificationNum,
+      onTap: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const NotificationPage()));
+      },
     );
   }
 
@@ -58,9 +67,7 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Container(
             margin: const EdgeInsets.only(left: 15, right: 15),
             child: const Text(
@@ -68,22 +75,9 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 15, right: 15),
-            child: CustomTextBox(
-              hint: "Search",
-              prefix: const Icon(Icons.search, color: Colors.black),
-              suffix:
-                  const Icon(Icons.filter_list_outlined, color: Colors.black),
-            ),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
           const SizedBox(height: 20),
+          buildSearchBox(context),
+          const SizedBox(height: 45),
           Container(
             margin: const EdgeInsets.only(left: 15, right: 15),
             child: const Text(
@@ -91,15 +85,24 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Container(
             margin: const EdgeInsets.only(left: 15, right: 15),
             child: buildAgentProfileList(context),
           ),
           const SizedBox(height: 20),
         ],
+      ),
+    );
+  }
+
+  Container buildSearchBox(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(left: 15, right: 15),
+      child: CustomTextBox(
+        hint: "Search",
+        prefix: const Icon(Icons.search, color: Colors.black),
+        suffix: const Icon(Icons.filter_list_outlined, color: Colors.black),
       ),
     );
   }

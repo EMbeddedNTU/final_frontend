@@ -62,19 +62,20 @@ class NotificationPage extends BaseStatelessWidget<NotificationModel> {
     );
   }
 
-  Container _buildContainerEmptyBulletinBoard(BuildContext context) {
+  Widget _buildContainerEmptyBulletinBoard(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage(ImageAsset.notificationIcon),
-          alignment: Alignment.bottomCenter,
+          alignment: Alignment.center,
           fit: BoxFit.contain,
         ),
       ),
-      child: Center(
+      child: const Center(
         child: Text(
           "沒有通知",
-          style: Theme.of(context).textTheme.headline1,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
         ),
       ),
     );

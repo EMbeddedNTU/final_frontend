@@ -8,6 +8,7 @@ class CustomTextBox extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffix;
   final TextEditingController? controller;
+
   @override
   Widget build(BuildContext context) {
     return Container(

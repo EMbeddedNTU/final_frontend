@@ -33,8 +33,15 @@ class GestureSettingPageState extends State<GestureSettingPage> {
                 (GestureSettingModel model) => model.gestureSettings);
 
         return Column(children: [
+          const Align(
+              child: Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Text("手勢設定",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          )),
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.only(top: 10),
               itemCount: gestureSettings.length,
               itemBuilder: (context, index) {
                 return buildGestureCard(context, gestureSettings[index], index);
@@ -65,7 +72,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
     );
   }
 
-  Row buildSubmitButtons(BuildContext context) {
+  Widget buildSubmitButtons(BuildContext context) {
     final buttonStyle = ElevatedButton.styleFrom(
       foregroundColor: Colors.white,
       backgroundColor: Colors.cyan,
@@ -75,7 +82,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
         borderRadius: BorderRadius.circular(30),
       ),
     );
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+    return Wrap(alignment: WrapAlignment.center, spacing: 50, children: [
       ElevatedButton(
         onPressed: () {
           Navigator.of(context).pop();
@@ -83,7 +90,6 @@ class GestureSettingPageState extends State<GestureSettingPage> {
         style: buttonStyle,
         child: const Text("取消"),
       ),
-      const SizedBox(width: 50),
       ElevatedButton(
         onPressed: () {
           context.read<GestureSettingModel>().addGesture();
@@ -188,11 +194,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
               .map((item) => DropdownMenuItem(
                     value: item.id,
                     child: SizedBox(
-                        width: 100,
-                        child: Center(
-                            child: Text(
-                                stateCommandOptions[selectStateCommandId]
-                                    .name))),
+                        width: 100, child: Center(child: Text(item.name))),
                   ))
               .toList(),
           onChanged: (int? value) {
@@ -208,7 +210,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
   Widget buildAddButton(BuildContext context) {
     return Container(
       key: UniqueKey(),
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.only(top: 10, bottom: 35),
       child: Center(
         child: Ink(
           decoration: const ShapeDecoration(
@@ -261,7 +263,7 @@ class GestureSettingPageState extends State<GestureSettingPage> {
             .deleteGesture(setting.gestureType, setting.effectType, null);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
