@@ -1,5 +1,4 @@
 import 'package:final_frontend/data/client/gesture_service.dart';
-import 'package:final_frontend/data/model/agent_info.dart';
 import 'package:final_frontend/data/model/effect_type.dart';
 import 'package:final_frontend/data/model/gesture_setting.dart';
 import 'package:final_frontend/data/model/gesture_type.dart';
@@ -50,54 +49,113 @@ class GestureSettingPageState extends State<GestureSettingPage> {
 
   Widget buildAddGesturePopup(BuildContext context) {
     final selectScope = context.watch<GestureSettingModel>().selectScope;
-    final selectStateCommandId =
-        context.watch<GestureSettingModel>().selectStateCommandId;
 
-    final stateCommandOptions =
-        (context.watch<GestureSettingModel>().stateCommandOptions)
-            .map((e) => e.id)
-            .toList();
-
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      buildGestureSelection(context, GestureType.values),
-      buildSingleProperty(context, context.read<GestureSettingModel>().setScope,
-          "類型", EffectType.values, selectScope),
-      buildAgentSelection(context),
-      buildSingleProperty(
-          context,
-          context.read<GestureSettingModel>().setCommand,
-          "效果",
-          stateCommandOptions,
-          selectStateCommandId),
-      const SizedBox(height: 10),
-      Row(children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text("取消"),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            context.read<GestureSettingModel>().addGesture();
-            Navigator.of(context).pop();
-          },
-          child: const Text("確認"),
-        )
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        buildGestureSelection(context, GestureType.values),
+        buildScopeSelection(context, EffectType.values),
+        selectScope == EffectType.local
+            ? const SizedBox.shrink()
+            : buildAgentSelection(context),
+        buildEffectSelection(context),
+        const SizedBox(height: 30),
+        buildSubmitButtons(context),
       ]),
+    );
+  }
+
+  Row buildSubmitButtons(BuildContext context) {
+    final buttonStyle = ElevatedButton.styleFrom(
+      foregroundColor: Colors.white,
+      backgroundColor: Colors.cyan,
+      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      minimumSize: const Size(100, 40),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+    );
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        style: buttonStyle,
+        child: const Text("取消"),
+      ),
+      const SizedBox(width: 50),
+      ElevatedButton(
+        onPressed: () {
+          context.read<GestureSettingModel>().addGesture();
+          Navigator.of(context).pop();
+        },
+        style: buttonStyle,
+        child: const Text("確認"),
+      )
     ]);
+  }
+
+  Widget buildGestureSelection(BuildContext context, List<GestureType> list) {
+    final selectedGesture = context.watch<GestureSettingModel>().selectGesture;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        const Text("手勢"),
+        const SizedBox(width: 30),
+        DropdownButton(
+          value: selectedGesture,
+          items: list
+              .map((item) => DropdownMenuItem(
+                    value: item,
+                    child: SizedBox(
+                        width: 100, child: Center(child: Text(item.getText()))),
+                  ))
+              .toList(),
+          onChanged: (GestureType? value) {
+            if (value != null) {
+              context.read<GestureSettingModel>().setGesture(value);
+            }
+          },
+        )
+      ],
+    );
+  }
+
+  Widget buildScopeSelection(BuildContext context, List<EffectType> list) {
+    final selectedEffect = context.watch<GestureSettingModel>().selectScope;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        const Text("類型"),
+        const SizedBox(width: 30),
+        DropdownButton(
+          value: selectedEffect,
+          items: list
+              .map((item) => DropdownMenuItem(
+                    value: item,
+                    child: SizedBox(
+                        width: 100, child: Center(child: Text(item.getText()))),
+                  ))
+              .toList(),
+          onChanged: (EffectType? value) {
+            if (value != null) {
+              context.read<GestureSettingModel>().setScope(value);
+            }
+          },
+        )
+      ],
+    );
   }
 
   Widget buildAgentSelection(BuildContext context) {
     final agents =
         context.watch<GestureSettingModel>().gestureSettingOption.agentInfoList;
     final selectAgent = context.watch<GestureSettingModel>().selectAgent;
-    print(agents);
-    print(selectAgent);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         const Text("裝置"),
+        const SizedBox(width: 30),
         DropdownButton(
           value: selectAgent,
           items: agents
@@ -114,51 +172,32 @@ class GestureSettingPageState extends State<GestureSettingPage> {
     );
   }
 
-  Widget buildGestureSelection(BuildContext context, List<GestureType> list) {
-    final selectedGesture = context.watch<GestureSettingModel>().selectGesture;
+  Widget buildEffectSelection(BuildContext context) {
+    final stateCommandOptions =
+        context.watch<GestureSettingModel>().stateCommandOptions;
+    final int selectStateCommandId =
+        context.watch<GestureSettingModel>().selectStateCommandId;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        const Text("手勢"),
+        const Text("效果"),
+        const SizedBox(width: 30),
         DropdownButton(
-          value: selectedGesture,
-          items: list
+          value: selectStateCommandId,
+          items: stateCommandOptions
               .map((item) => DropdownMenuItem(
-                    value: item,
+                    value: item.id,
                     child: SizedBox(
                         width: 100,
-                        child: Center(child: Text(item.toString()))),
+                        child: Center(
+                            child: Text(
+                                stateCommandOptions[selectStateCommandId]
+                                    .name))),
                   ))
               .toList(),
-          onChanged: (GestureType? value) {
+          onChanged: (int? value) {
             if (value != null) {
-              context.read<GestureSettingModel>().setGesture(value);
-            }
-          },
-        )
-      ],
-    );
-  }
-
-  Widget buildSingleProperty<T>(BuildContext context, void Function(T) setState,
-      String title, List<T> list, T selectedValue) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(title),
-        DropdownButton(
-          value: selectedValue,
-          items: list
-              .map((item) => DropdownMenuItem(
-                    value: item,
-                    child: SizedBox(
-                        width: 100,
-                        child: Center(child: Text(item.toString()))),
-                  ))
-              .toList(),
-          onChanged: (T? value) {
-            if (value is T) {
-              setState(value);
+              context.read<GestureSettingModel>().setCommand(value);
             }
           },
         )
@@ -191,7 +230,11 @@ class GestureSettingPageState extends State<GestureSettingPage> {
                       value: notifier,
                       builder: (context, _) {
                         return AlertDialog(
-                          title: const Center(child: Text("新增手勢")),
+                          title: const Center(
+                              child: Text("新增手勢",
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold))),
                           content: buildAddGesturePopup(context),
                         );
                       },
@@ -206,6 +249,10 @@ class GestureSettingPageState extends State<GestureSettingPage> {
 
   Widget buildGestureCard(
       BuildContext context, GestureSetting setting, int index) {
+    final agentName = setting.effectType == EffectType.local
+        ? "當前最近的裝置"
+        : setting.agentTargetName;
+
     return Dismissible(
       key: UniqueKey(),
       onDismissed: (DismissDirection direction) {
@@ -214,8 +261,8 @@ class GestureSettingPageState extends State<GestureSettingPage> {
             .deleteGesture(setting.gestureType, setting.effectType, null);
       },
       child: Container(
-        margin: const EdgeInsets.all(5),
-        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -231,9 +278,9 @@ class GestureSettingPageState extends State<GestureSettingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("手勢： ${setting.gestureType}"),
-            Text("類型： ${setting.effectType}"),
-            Text("裝置： ${setting.agentTargetName}"),
+            Text("手勢： ${setting.gestureType.getText()}"),
+            Text("類型： ${setting.effectType.getText()}"),
+            Text("裝置： $agentName"),
             Text("效果： ${setting.stateCommandName}")
           ],
         ),
