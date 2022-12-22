@@ -5,6 +5,7 @@ import 'package:final_frontend/components/text_box.dart';
 import 'package:final_frontend/screens/home/agent_setting/agent/agent_detail.dart';
 import 'package:final_frontend/screens/home/agent_setting/agent_setting_model.dart';
 import 'package:final_frontend/screens/home/components/notification.dart';
+import 'package:final_frontend/screens/home/notification/notification_page.dart';
 import 'package:final_frontend/screens/util/base_state_less_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -38,8 +39,12 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
                       Icons.clear_all_rounded,
                       size: 28,
                     ))),
-            const NotificationBox(
+            NotificationBox(
               number: 1,
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NotificationPage()));
+              },
             )
           ],
         ),
