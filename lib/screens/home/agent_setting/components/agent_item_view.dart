@@ -31,8 +31,8 @@ class AgentItemView extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CustomImage(
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
+            const CustomImage(
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4h_8-BuOkHriAVFfjaxX4JanLHJ6xayqc5XiYultVP56NClOhYW3ZLGDgei_B5AZ3GtM&usqp=CAU",
               width: 60,
               height: 60,
               radius: 10,
