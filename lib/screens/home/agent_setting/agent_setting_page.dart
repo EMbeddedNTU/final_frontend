@@ -119,6 +119,11 @@ class AgentSettingPage extends BaseStatelessWidget<AgentSettingModel> {
           onTap: () async {
             final notifier =
                 Provider.of<AgentSettingModel>(context, listen: false);
+
+            context
+                .read<AgentSettingModel>()
+                .getStateCommandList(agentProfiles[index].id);
+
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
