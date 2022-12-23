@@ -17,7 +17,7 @@ class _StartPageState extends State<StartPage> with TickerProviderStateMixin {
   AnimationController? _controller;
   bool _isAnimationEnd = false;
   int cont = 0;
-  int targetCount = 2;
+  int targetCount = 1;
 
   @override
   void initState() {

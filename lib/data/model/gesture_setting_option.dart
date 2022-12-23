@@ -21,11 +21,20 @@ class GestureSettingOption {
       };
 
   factory GestureSettingOption.fromMap(Map<String, dynamic> map) {
+    print(List.from(map['agentInfoList']).map((e) => AgentInfo(
+        id: e['id'], name: e['name'], location: e['location'], typeList: [])));
     return GestureSettingOption(
       gestureTypeList: List.from(map['gestureTypeList']),
       effectTypeList: List.from(map['effectTypeList']),
-      agentInfoList:
-          List.from(map['agentInfoList'].map((e) => AgentInfo.fromMap(e))),
+      // agentInfoList:
+      //     List.from(map['agentInfoList'].map((e) => AgentInfo.fromMap(e))),
+      agentInfoList: List.from(map['agentInfoList'])
+          .map((e) => AgentInfo(
+              id: e['id'],
+              name: e['name'],
+              location: e['location'],
+              typeList: []))
+          .toList(),
     );
   }
 

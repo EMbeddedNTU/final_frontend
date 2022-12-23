@@ -43,6 +43,7 @@ class GestureService {
       print(response.statusCode);
       if (response.statusCode == 200) {
         print(response.body);
+        print("here");
         return GestureSettingOption.fromJson(response.body);
       } else {
         // TODO:

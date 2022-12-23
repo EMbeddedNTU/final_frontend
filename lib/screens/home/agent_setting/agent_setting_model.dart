@@ -12,7 +12,7 @@ class AgentSettingModel extends BaseModel {
   AgentSettingModel(this._agentService, this._notificationService) {
     getAgentProfiles();
     timer =
-        Timer.periodic(const Duration(minutes: 1), (_) => _getNotifications());
+        Timer.periodic(const Duration(seconds: 10), (_) => _getNotifications());
   }
 
   final AgentService _agentService;
